@@ -1,11 +1,14 @@
 // quiz.js — implements a 15-question MCQ quiz with some interactive angle questions
+// Persist generated interactive questions and answers to localStorage so reloading keeps the same quiz
 const quizContainer = document.getElementById('quiz');
 const prevBtn = document.getElementById('prevQ');
 const nextBtn = document.getElementById('nextQ');
 const submitBtn = document.getElementById('submitQuiz');
 const resultDiv = document.getElementById('quizResult');
 
-// Build 15 questions (mix of static and generated interactive ones)
+const STORAGE_KEY = 'angles_quiz_v1';
+
+// Build static questions
 const staticQuestions = [
   {text: 'Which angle is a right angle?', options: ['45°', '90°', '180°', '360°'], answer: 1, explanation: 'A right angle measures 90°.'},
   {text: 'Which of these is an obtuse angle?', options: ['60°', '120°', '30°', '45°'], answer: 1, explanation: 'An obtuse angle is between 90° and 180°, so 120° is obtuse.'},
@@ -19,10 +22,8 @@ const staticQuestions = [
   {text: 'Which shows a full angle?', options: ['90°','180°','360°','270°'], answer: 2, explanation: '360° is a full angle.'}
 ];
 
-// We'll create 5 interactive questions that show a random angle on the canvas and ask for its measure (rounded to nearest degree).
 function makeInteractiveQuestion(id){
   const ang = Math.floor(Math.random()*160)+10; // 10..169
-  // generate 3 distractors
   const distractors = new Set();
   while(distractors.size < 3){
     let delta = Math.floor(Math.random()*25)+2; // 2..26
@@ -37,20 +38,55 @@ function makeInteractiveQuestion(id){
   return {text: `Look at the drawing above. What is the angle shown? (Question ${id})`, options: opts.map(v=>v+'°'), answer: answerIndex, angleToShow: ang, explanation: `The drawn angle is ${ang}°.`};
 }
 
-const interactiveQuestions = [1,2,3,4,5].map(i=>makeInteractiveQuestion(i));
+// State (questions, answers, current index)
+let state = {
+  questions: [],
+  answers: [],
+  current: 0
+};
 
-const questions = [];
-// interleave static and interactive to reach 15 total
-for(let i=0;i<15;i++){
-  if(i%3===2 && interactiveQuestions.length) questions.push(interactiveQuestions.shift());
-  else questions.push(staticQuestions[i%staticQuestions.length]);
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    const parsed = JSON.parse(raw);
+    if(parsed && Array.isArray(parsed.questions) && Array.isArray(parsed.answers)){
+      state = parsed;
+      return true;
+    }
+  }catch(e){ console.warn('Failed to load quiz state', e); }
+  return false;
 }
 
-let current = 0;
-const answers = Array(questions.length).fill(null);
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){ console.warn('Failed to save quiz state', e); }
+}
+
+function initQuestions(){
+  // If there's saved state, reuse it (keeps same interactive questions and answers)
+  if(loadState()){
+    // ensure questions length is 15
+    if(state.questions.length === 15){ return; }
+    // otherwise fall through to regenerate
+  }
+
+  // create interactive questions (5 of them)
+  const interactiveQuestions = [1,2,3,4,5].map(i=>makeInteractiveQuestion(i));
+  const questions = [];
+  for(let i=0;i<15;i++){
+    if(i%3===2 && interactiveQuestions.length) questions.push(interactiveQuestions.shift());
+    else questions.push(staticQuestions[i%staticQuestions.length]);
+  }
+  state.questions = questions;
+  state.answers = Array(questions.length).fill(null);
+  state.current = 0;
+  saveState();
+}
 
 function renderQuestion(index){
-  const q = questions[index];
+  const q = state.questions[index];
   quizContainer.innerHTML = '';
   const f = document.createElement('form');
   f.className = 'questionForm';
@@ -58,13 +94,13 @@ function renderQuestion(index){
 
   const field = document.createElement('fieldset');
   const legend = document.createElement('legend');
-  legend.textContent = `Question ${index+1} of ${questions.length}`;
+  legend.textContent = `Question ${index+1} of ${state.questions.length}`;
   field.appendChild(legend);
 
   const p = document.createElement('p'); p.className='question'; p.textContent = q.text; field.appendChild(p);
 
   // If interactive, set the simulator angle for student to view
-  if(q.angleToShow !== undefined){
+  if(q.angleToShow !== undefined && typeof window.setAngle === 'function'){
     window.setAngle(q.angleToShow);
   }
 
@@ -73,7 +109,8 @@ function renderQuestion(index){
     const li = document.createElement('li');
     const id = `q${index}_opt${i}`;
     const input = document.createElement('input');
-    input.type='radio'; input.name='option'; input.id=id; input.value=i; input.checked = answers[index]===i;
+    input.type='radio'; input.name='option'; input.id=id; input.value=i; input.checked = state.answers[index]===i;
+    input.addEventListener('change', ()=>{ state.answers[index]=i; saveState(); });
     const label = document.createElement('label'); label.setAttribute('for', id); label.textContent = opt;
     li.appendChild(input); li.appendChild(label);
     ul.appendChild(li);
@@ -89,22 +126,23 @@ function renderQuestion(index){
 
   // enable/disable nav buttons
   prevBtn.disabled = index===0;
-  nextBtn.disabled = index===questions.length-1;
+  nextBtn.disabled = index===state.questions.length-1;
 }
 
-function saveAnswer(){
-  const sel = document.querySelector('.questionForm input[name="option"]:checked');
-  if(sel) answers[current]=Number(sel.value);
+function saveCurrentAndRender(newIndex){
+  state.current = newIndex;
+  saveState();
+  renderQuestion(state.current);
 }
 
-prevBtn.addEventListener('click', ()=>{ saveAnswer(); if(current>0){ current--; renderQuestion(current); }});
-nextBtn.addEventListener('click', ()=>{ saveAnswer(); if(current<questions.length-1){ current++; renderQuestion(current); }});
+prevBtn.addEventListener('click', ()=>{ if(state.current>0){ saveState(); state.current--; renderQuestion(state.current); }});
+nextBtn.addEventListener('click', ()=>{ if(state.current < state.questions.length-1){ saveState(); state.current++; renderQuestion(state.current); }});
 
 submitBtn.addEventListener('click', ()=>{
-  saveAnswer(); // grade
+  saveState(); // ensure latest answer saved
   let score = 0;
   quizContainer.innerHTML = '';
-  questions.forEach((q,i)=>{
+  state.questions.forEach((q,i)=>{
     const div = document.createElement('div');
     const h = document.createElement('h3'); h.textContent = `Q${i+1}: ${q.text}`; div.appendChild(h);
     const list = document.createElement('ul'); list.className='options';
@@ -112,19 +150,27 @@ submitBtn.addEventListener('click', ()=>{
       const li = document.createElement('li');
       li.textContent = opt;
       if(j===q.answer){ li.classList.add('correct'); li.textContent = opt + ' ✓ (correct)'; }
-      if(answers[i]===j && j!==q.answer){ li.classList.add('incorrect'); li.textContent = opt + ' ✗ (your answer)'; }
+      if(state.answers[i]===j && j!==q.answer){ li.classList.add('incorrect'); li.textContent = opt + ' ✗ (your answer)'; }
       list.appendChild(li);
     });
     div.appendChild(list);
     const ex = document.createElement('div'); ex.className='explanation'; ex.textContent = q.explanation || (q.angleToShow!==undefined?`Measured angle: ${q.angleToShow}°`:'');
     div.appendChild(ex);
     quizContainer.appendChild(div);
-    if(answers[i]===q.answer) score++;
+    if(state.answers[i]===q.answer) score++;
   });
-  resultDiv.textContent = `You scored ${score} out of ${questions.length}`;
-  // scroll to result
+  resultDiv.textContent = `You scored ${score} out of ${state.questions.length}`;
+  // keep state so reloading still shows same questions & answers; mark as completed in storage
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    saved.completedAt = (new Date()).toISOString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){}
   resultDiv.scrollIntoView({behavior:'smooth'});
 });
 
-// initial render
-renderQuestion(current);
+// initialization
+initQuestions();
+// enforce bounds
+if(state.current < 0 || state.current >= state.questions.length) state.current = 0;
+renderQuestion(state.current);
