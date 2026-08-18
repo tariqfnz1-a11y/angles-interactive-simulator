@@ -1,4 +1,5 @@
 // script.js — draws an angle with one fixed ray and one movable ray
+// Mobile-optimized with touch support and gesture handling
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const range = document.getElementById('angleRange');
@@ -70,6 +71,26 @@ canvas.addEventListener('pointerdown', e=>{
 canvas.addEventListener('pointermove', e=>{ if(!dragging) return; const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; setAngle(Math.round(canvasPosToAngle(x,y))); });
 canvas.addEventListener('pointerup', e=>{ dragging = false; try{canvas.releasePointerCapture(e.pointerId)}catch{} });
 canvas.addEventListener('pointercancel', ()=> dragging=false);
+
+// touch gesture support for swipe to adjust angle
+let touchStartX = 0;
+let touchStartAngle = angle;
+canvas.addEventListener('touchstart', e=>{
+  if(e.touches.length===1){
+    touchStartX = e.touches[0].clientX;
+    touchStartAngle = angle;
+  }
+}, {passive:true});
+
+canvas.addEventListener('touchmove', e=>{
+  if(e.touches.length===1){
+    const currentX = e.touches[0].clientX;
+    const deltaX = currentX - touchStartX;
+    // 1 pixel of swipe = 0.5 degrees
+    const newAngle = touchStartAngle + Math.round(deltaX * 0.5);
+    setAngle(newAngle);
+  }
+}, {passive:true});
 
 // resize handling
 function resizeCanvas(){ // keep resolution high on HiDPI
