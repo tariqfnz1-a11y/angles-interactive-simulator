@@ -26,3 +26,39 @@ footer{margin-top:1rem;color:var(--muted)}
 .correct{background:linear-gradient(90deg,#edf7ed,#f0fff4);border:1px solid #b7f0c1;padding:0.5rem;border-radius:6px}
 .incorrect{background:linear-gradient(90deg,#fff3f3,#fff8f8);border:1px solid #f3c2c2;padding:0.5rem;border-radius:6px}
 .explanation{font-size:0.95rem;color:var(--muted);margin-top:0.5rem}
+
+/* simple modal/dialog styles */
+.dialog {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+  z-index: 9999;
+  padding: 1rem;
+}
+.dialog[hidden] { display: none; }
+.dialog-inner {
+  background: #fff;
+  max-width: 900px;
+  width: 100%;
+  max-height: 85vh;
+  overflow: auto;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  padding: 1rem;
+}
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.dialog-content {
+  margin-top: 0.5rem;
+  padding-bottom: 1rem;
+}
+.dialog-controls button {
+  margin-left: 0.5rem;
+}
