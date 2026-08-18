@@ -1,0 +1,16 @@
+/* styles.css — simple accessible styling */
+:root{
+  --bg:#f7fafc; --fg:#0f172a; --accent:#ff8c00; --muted:#334155;
+}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+body{background:var(--bg);color:var(--fg);display:flex;flex-direction:column;align-items:center;padding:1rem}
+header{max-width:900px;text-align:center}
+canvas{background:#fff;border:4px solid #e2e8f0;border-radius:8px;display:block;margin:1rem auto;max-width:100%;height:auto}
+.controls{max-width:900px;width:100%;display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;justify-content:center}
+input[type=range]{width:220px}
+label{font-weight:600}
+button{background:var(--accent);color:white;border:none;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer}
+button:focus, input:focus{outline:3px solid #ffdca8;outline-offset:3px}
+output{font-weight:700;margin-left:0.3rem}
+footer{margin-top:1rem;color:var(--muted)}
+@media(max-width:520px){canvas{width:100%;height:320px}}

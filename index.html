@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Angles Interactive Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Angles: Interactive Simulator</h1>
+    <p>Move the slider or drag the orange handle to change the angle. Designed for 4th graders. Accessible controls included.</p>
+  </header>
+
+  <main>
+    <canvas id="canvas" width="600" height="400" aria-label="Angle drawing area" role="img"></canvas>
+
+    <div class="controls">
+      <label for="angleRange">Angle: <output id="angleValue">60°</output></label>
+      <input type="range" id="angleRange" min="0" max="360" value="60" aria-describedby="angleHelp">
+      <button id="randomBtn">Random angle</button>
+      <p id="angleHelp">Use the slider or drag the orange handle on the circle. Arrow keys adjust the slider by 1°, Shift+arrow by 5°.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>Made for classroom practice — simple, keyboard & touch friendly.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
