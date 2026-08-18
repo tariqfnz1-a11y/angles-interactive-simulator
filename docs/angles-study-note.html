@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Angles & Types — Colourful Study Note</title>
+  <meta name="description" content="A bright, kid-friendly study note about angles and common angle types (acute, right, obtuse, straight, reflex, full).">
+  <style>
+    :root{
+      --bg:#fff9fb;
+      --card:#ffffff;
+      --accent:#1E88E5;
+      --accent-2:#E53935;
+      --muted:#555;
+      --radius:12px;
+      --shadow: 0 6px 18px rgba(16,24,40,0.08);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; background:linear-gradient(180deg,#fff9fb 0%, #f0f8ff 100%);
+      color:#111; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      padding:32px; display:flex; align-items:center; justify-content:center;
+    }
+    .container{max-width:900px; width:100%;}
+    header{display:flex; align-items:center; gap:16px; margin-bottom:18px}
+    .logo{width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,var(--accent),#8E24AA); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:20px}
+    h1{margin:0; font-size:1.6rem}
+    p.lead{margin:6px 0 0; color:var(--muted)}
+
+    .card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-bottom:18px}
+    .grid{display:grid; grid-template-columns:1fr 320px; gap:18px}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}}
+
+    .type-list{display:flex; flex-direction:column; gap:10px}
+    .type{display:flex; gap:12px; align-items:center}
+    .swatch{width:46px; height:46px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700}
+    .desc{line-height:1.25}
+    .example{color:#222; font-weight:600}
+
+    .visuals{display:flex; flex-direction:column; gap:12px}
+    .svg-wrap{background:linear-gradient(180deg,rgba(255,255,255,0.7),rgba(255,255,255,0.9)); padding:12px; border-radius:10px; display:flex; align-items:center; gap:12px}
+    svg{width:120px; height:80px}
+
+    .tips{font-size:0.95rem}
+    .quiz{display:flex; flex-direction:column; gap:8px}
+    button.reveal{background:var(--accent); color:white; border:0; padding:8px 12px; border-radius:8px; cursor:pointer}
+    button.reveal:focus{outline:3px solid #ffd54f}
+
+    footer{font-size:0.9rem; color:var(--muted); margin-top:8px}
+  </style>
+</head>
+<body>
+  <main class="container" role="main">
+    <header>
+      <div class="logo" aria-hidden="true">∠</div>
+      <div>
+        <h1>Angles & Types — Colourful Study Note</h1>
+        <p class="lead">Short, bright, and kid-friendly explanations of common angle types with small diagrams and a practice quiz.</p>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="what-is-angle">
+      <h2 id="what-is-angle">What is an angle?</h2>
+      <p>An angle is made when two lines (called arms) meet at a point (the vertex). We measure angles in degrees (°).</p>
+      <ul>
+        <li><strong>Vertex:</strong> the meeting point</li>
+        <li><strong>Arms:</strong> the two lines forming the angle</li>
+        <li><strong>Unit:</strong> degrees (°)</li>
+      </ul>
+    </section>
+
+    <div class="grid">
+      <section class="card" aria-labelledby="angle-types">
+        <h2 id="angle-types">Angle types (with colours)</h2>
+        <div class="type-list" role="list">
+          <div class="type" role="listitem">
+            <div class="swatch" style="background:#E53935" aria-hidden="true">A</div>
+            <div class="desc"><strong>Acute angle</strong> — less than 90° (small & sharp)<div class="example">Examples: 30°, 45°</div></div>
+          </div>
+
+          <div class="type" role="listitem">
+            <div class="swatch" style="background:#1E88E5" aria-hidden="true">R</div>
+            <div class="desc"><strong>Right angle</strong> — exactly 90° (perfect corner). Symbol: ⟂</div>
+          </div>
+
+          <div class="type" role="listitem">
+            <div class="swatch" style="background:#FB8C00" aria-hidden="true">O</div>
+            <div class="desc"><strong>Obtuse angle</strong> — greater than 90° but less than 180° (wide). Example: 120°</div>
+          </div>
+
+          <div class="type" role="listitem">
+            <div class="swatch" style="background:#6A1B9A" aria-hidden="true">S</div>
+            <div class="desc"><strong>Straight angle</strong> — exactly 180° (a straight line)</div>
+          </div>
+
+          <div class="type" role="listitem">
+            <div class="swatch" style="background:#00897B" aria-hidden="true">R</div>
+            <div class="desc"><strong>Reflex angle</strong> — greater than 180° but less than 360° (bends the other way)</div>
+          </div>
+
+          <div class="type" role="listitem">
+            <div class="swatch" style="background:#FDD835; color:#222" aria-hidden="true">F</div>
+            <div class="desc"><strong>Full / Complete angle</strong> — exactly 360° (all the way round)</div>
+          </div>
+
+        </div>
+      </section>
+
+      <aside class="card" aria-labelledby="visual-guide">
+        <h2 id="visual-guide">Quick visual guide</h2>
+        <div class="visuals">
+          <div class="svg-wrap">
+            <svg viewBox="0 0 120 80" role="img" aria-label="Acute angle diagram">
+              <path d="M20 60 L60 20 L90 60" fill="none" stroke="#E53935" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="60" cy="20" r="3" fill="#111" />
+            </svg>
+            <div><strong>Acute</strong><div style="color:var(--muted)">looks sharp</div></div>
+          </div>
+
+          <div class="svg-wrap">
+            <svg viewBox="0 0 120 80" role="img" aria-label="Right angle diagram">
+              <path d="M30 60 L30 30 L60 30" fill="none" stroke="#1E88E5" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              <rect x="30" y="30" width="12" height="12" fill="#1E88E5" opacity="0.12" stroke="none" />
+            </svg>
+            <div><strong>Right</strong><div style="color:var(--muted)">like a corner</div></div>
+          </div>
+
+          <div class="svg-wrap">
+            <svg viewBox="0 0 120 80" role="img" aria-label="Obtuse angle diagram">
+              <path d="M20 60 L60 20 L100 60" fill="none" stroke="#FB8C00" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="scale(1,0.9) translate(0,4)" />
+            </svg>
+            <div><strong>Obtuse</strong><div style="color:var(--muted)">wide open</div></div>
+          </div>
+
+          <div class="svg-wrap">
+            <svg viewBox="0 0 120 80" role="img" aria-label="Straight angle diagram">
+              <line x1="10" y1="40" x2="110" y2="40" stroke="#6A1B9A" stroke-width="6" stroke-linecap="round" />
+            </svg>
+            <div><strong>Straight</strong><div style="color:var(--muted)">a straight line (180°)</div></div>
+          </div>
+
+        </div>
+      </aside>
+    </div>
+
+    <section class="card" aria-labelledby="tips">
+      <h2 id="tips">Tips to recognise angles</h2>
+      <ul class="tips">
+        <li>If the angle is smaller than the corner of a book, it is probably <strong>acute</strong>.</li>
+        <li>If it looks like the corner of a square, it is a <strong>right</strong> angle.</li>
+        <li>If it opens more than a right angle but is not a straight line, it is <strong>obtuse</strong>.</li>
+      </ul>
+    </section>
+
+    <section class="card" aria-labelledby="practice">
+      <h2 id="practice">Practice questions</h2>
+      <ol class="quiz">
+        <li>
+          Is 45° acute, right, obtuse, straight, or reflex?
+          <button class="reveal" data-answer="Acute" aria-expanded="false">Show answer</button>
+        </li>
+        <li>
+          Name the angle type for 90°.
+          <button class="reveal" data-answer="Right" aria-expanded="false">Show answer</button>
+        </li>
+        <li>
+          What type is 200°?
+          <button class="reveal" data-answer="Reflex" aria-expanded="false">Show answer</button>
+        </li>
+        <li>
+          What is a straight angle in degrees?
+          <button class="reveal" data-answer="180°" aria-expanded="false">Show answer</button>
+        </li>
+      </ol>
+      <div style="margin-top:10px;color:var(--muted)">Use the Tab key to focus the buttons and press Enter or Space to reveal answers.</div>
+    </section>
+
+    <footer class="card">
+      <div>Want this page as part of your GitHub Pages site? This file is saved at <strong>docs/angles-study-note.html</strong>, which GitHub Pages can serve if your site source is the repository root or the docs/ folder.</div>
+      <div style="margin-top:8px">If you want, I can also add SVG labels, convert the diagrams into more detailed accessible illustrations, or add an interactive quiz that grades answers.</div>
+    </footer>
+  </main>
+
+  <script>
+    // Reveal-answer buttons with accessible state
+    document.querySelectorAll('button.reveal').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const shown = btn.getAttribute('aria-expanded') === 'true';
+        if(!shown){
+          const ans = btn.dataset.answer || 'Answer';
+          const span = document.createElement('div');
+          span.textContent = ans;
+          span.style.marginTop = '6px';
+          span.style.fontWeight = '700';
+          span.setAttribute('role','status');
+          btn.parentElement.appendChild(span);
+          btn.setAttribute('aria-expanded','true');
+          btn.textContent = 'Hide answer';
+        } else {
+          const next = btn.parentElement.querySelector('[role="status"]');
+          if(next) next.remove();
+          btn.setAttribute('aria-expanded','false');
+          btn.textContent = 'Show answer';
+        }
+      });
+      btn.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); btn.click(); }
+      });
+    });
+  </script>
+</body>
+</html>
