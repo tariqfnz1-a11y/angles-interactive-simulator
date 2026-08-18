@@ -16,7 +16,7 @@ const staticQuestions = [
   {text: 'Which angle is acute?', options: ['100°', '95°', '85°', '180°'], answer: 2, explanation: 'An acute angle is less than 90°, so 85° is acute.'},
   {text: 'Two right angles together equal:', options: ['90°', '180°', '270°', '360°'], answer: 1, explanation: '90° + 90° = 180°.'},
   {text: 'Which is not a full rotation?', options: ['360°', '180°', '90°', '45°'], answer: 1, explanation: 'A full rotation is 360°, so the others are not full.'},
-  {text: 'Which pair could be complementary angles?', options: ['30° and 60°', '100° and 80°', '120° and 60°', '200° and 160°'], answer: 0, explanation: 'Complementary angles add up to 90° (30 + 60 = 90).'},
+  {text: 'Which pair could be complementary angles?', options: ['30° and 60°', '100° and 80°', '120° and 60°', '200° and 160°'], answer: 0, explanation: 'Complementary angles add up to 90°.'},
   {text: 'An angle of 0° is called:', options: ['Right angle','Straight angle','Reflex angle','Zero angle'], answer: 3, explanation: '0° is a zero angle.'},
   {text: 'A reflex angle is:', options: ['Less than 90°','Between 90° and 180°','Between 180° and 360°','Exactly 360°'], answer: 2, explanation: 'A reflex angle is greater than 180° but less than 360°.'},
   {text: 'Which shows a full angle?', options: ['90°','180°','360°','270°'], answer: 2, explanation: '360° is a full angle.'}
@@ -35,7 +35,7 @@ function makeInteractiveQuestion(id){
   // shuffle options
   for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
   const answerIndex = opts.indexOf(ang);
-  return {text: `Look at the drawing above. What is the angle shown? (Question ${id})`, options: opts.map(v=>v+'°'), answer: answerIndex, angleToShow: ang, explanation: `The drawn angle is ${ang}°.`};
+  return {text: `Look at the drawing above. What is the angle shown? (Question ${id})`, options: opts.map(v=>v+'°'), answer: answerIndex, angleToShow: ang, explanation: `The drawn angle is ${ang}°.`}
 }
 
 // State (questions, answers, current index)
@@ -85,6 +85,16 @@ function initQuestions(){
   saveState();
 }
 
+// Check if all questions are answered
+function areAllQuestionsAnswered(){
+  return state.answers.every(answer => answer !== null);
+}
+
+// Update submit button state
+function updateSubmitButtonState(){
+  submitBtn.disabled = !areAllQuestionsAnswered();
+}
+
 function renderQuestion(index){
   const q = state.questions[index];
   quizContainer.innerHTML = '';
@@ -110,7 +120,7 @@ function renderQuestion(index){
     const id = `q${index}_opt${i}`;
     const input = document.createElement('input');
     input.type='radio'; input.name='option'; input.id=id; input.value=i; input.checked = state.answers[index]===i;
-    input.addEventListener('change', ()=>{ state.answers[index]=i; saveState(); });
+    input.addEventListener('change', ()=>{ state.answers[index]=i; saveState(); updateSubmitButtonState(); });
     const label = document.createElement('label'); label.setAttribute('for', id); label.textContent = opt;
     li.appendChild(input); li.appendChild(label);
     ul.appendChild(li);
@@ -174,3 +184,5 @@ initQuestions();
 // enforce bounds
 if(state.current < 0 || state.current >= state.questions.length) state.current = 0;
 renderQuestion(state.current);
+// Set initial submit button state
+updateSubmitButtonState();
