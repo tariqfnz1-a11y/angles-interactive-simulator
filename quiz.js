@@ -4,6 +4,7 @@ const quizContainer = document.getElementById('quiz');
 const prevBtn = document.getElementById('prevQ');
 const nextBtn = document.getElementById('nextQ');
 const submitBtn = document.getElementById('submitQuiz');
+const resetBtn = document.getElementById('resetQuiz');
 const resultDiv = document.getElementById('quizResult');
 
 const STORAGE_KEY = 'angles_quiz_v1';
@@ -145,6 +146,22 @@ function saveCurrentAndRender(newIndex){
   renderQuestion(state.current);
 }
 
+function resetQuiz(){
+  if(confirm('Are you sure you want to reset the quiz? All your answers will be cleared.')){
+    localStorage.removeItem(STORAGE_KEY);
+    state = {
+      questions: [],
+      answers: [],
+      current: 0
+    };
+    resultDiv.textContent = '';
+    initQuestions();
+    if(state.current < 0 || state.current >= state.questions.length) state.current = 0;
+    renderQuestion(state.current);
+    updateSubmitButtonState();
+  }
+}
+
 prevBtn.addEventListener('click', ()=>{ if(state.current>0){ saveState(); state.current--; renderQuestion(state.current); }});
 nextBtn.addEventListener('click', ()=>{ if(state.current < state.questions.length-1){ saveState(); state.current++; renderQuestion(state.current); }});
 
@@ -178,6 +195,8 @@ submitBtn.addEventListener('click', ()=>{
   }catch(e){}
   resultDiv.scrollIntoView({behavior:'smooth'});
 });
+
+resetBtn.addEventListener('click', resetQuiz);
 
 // initialization
 initQuestions();
