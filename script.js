@@ -92,16 +92,22 @@ canvas.addEventListener('touchmove', e=>{
   }
 }, {passive:true});
 
-// resize handling
-function resizeCanvas(){ // keep resolution high on HiDPI
+// resize handling — maintain aspect ratio
+function resizeCanvas(){
   const ratio = window.devicePixelRatio || 1;
-  const width = Math.min(window.innerWidth-40, 900);
-  canvas.width = Math.round(width * ratio);
-  canvas.height = Math.round(400 * ratio);
-  canvas.style.width = Math.round(width) + 'px';
-  canvas.style.height = Math.round(400) + 'px';
-  ctx.setTransform(ratio,0,0,ratio,0,0);
+  const containerWidth = Math.min(window.innerWidth - 40, 900);
+  // Calculate height to maintain 3:2 aspect ratio (600:400)
+  const aspectRatio = 600 / 400;
+  const displayWidth = containerWidth;
+  const displayHeight = Math.round(displayWidth / aspectRatio);
+  
+  canvas.width = Math.round(displayWidth * ratio);
+  canvas.height = Math.round(displayHeight * ratio);
+  canvas.style.width = displayWidth + 'px';
+  canvas.style.height = displayHeight + 'px';
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
+
 window.addEventListener('resize', ()=>{ resizeCanvas(); draw(); });
 
 // init
