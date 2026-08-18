@@ -13,20 +13,39 @@
   </header>
 
   <main>
-    <canvas id="canvas" width="600" height="400" aria-label="Angle drawing area" role="img"></canvas>
+    <section aria-labelledby="simTitle">
+      <h2 id="simTitle">Angle drawing area</h2>
+      <canvas id="canvas" width="600" height="400" aria-label="Angle drawing area" role="img"></canvas>
 
-    <div class="controls">
-      <label for="angleRange">Angle: <output id="angleValue">60°</output></label>
-      <input type="range" id="angleRange" min="0" max="360" value="60" aria-describedby="angleHelp">
-      <button id="randomBtn">Random angle</button>
-      <p id="angleHelp">Use the slider or drag the orange handle on the circle. Arrow keys adjust the slider by 1°, Shift+arrow by 5°.</p>
-    </div>
+      <div class="controls">
+        <label for="angleRange">Angle: <output id="angleValue">60°</output></label>
+        <input type="range" id="angleRange" min="0" max="360" value="60" aria-describedby="angleHelp">
+        <button id="randomBtn">Random angle</button>
+        <p id="angleHelp">Use the slider or drag the orange handle on the circle. Arrow keys adjust the slider by 1°, Shift+arrow by 5°.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="quizSection" aria-labelledby="quizTitle">
+      <h2 id="quizTitle">Quiz — 15 multiple-choice questions</h2>
+      <p>Test your knowledge. Questions are mixed with static and interactive angle questions that use the drawing above.</p>
+      <div id="quiz"></div>
+      <div id="quizControls" class="quiz-controls">
+        <button id="prevQ" disabled>Previous</button>
+        <button id="nextQ">Next</button>
+        <button id="submitQuiz">Submit Quiz</button>
+      </div>
+      <div id="quizResult" aria-live="polite"></div>
+    </section>
+
   </main>
 
   <footer>
-    <p>Made for classroom practice — simple, keyboard & touch friendly.</p>
+    <p>Made for classroom practice — simple, keyboard &amp; touch friendly.</p>
   </footer>
 
   <script src="script.js"></script>
+  <script src="quiz.js"></script>
 </body>
 </html>
