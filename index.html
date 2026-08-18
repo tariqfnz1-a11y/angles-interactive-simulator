@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Interactive angles simulator for 4th grade math. Learn angles with drag-and-drop and quiz.">
   <title>Angles Interactive Simulator</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>∠</text></svg>">
 </head>
 <body>
   <header>
@@ -15,14 +18,17 @@
   <main>
     <section aria-labelledby="simTitle">
       <h2 id="simTitle">Angle drawing area</h2>
-      <canvas id="canvas" width="600" height="400" aria-label="Angle drawing area" role="img"></canvas>
+      <canvas id="canvas" width="600" height="400" aria-label="Interactive angle drawing. Drag the orange dot or use the slider below to change the angle." role="img"></canvas>
 
       <div class="controls">
         <label for="angleRange">Angle: <output id="angleValue">60°</output></label>
         <input type="range" id="angleRange" min="0" max="360" value="60" aria-describedby="angleHelp">
-        <button id="randomBtn">Random angle</button>
-        <a href="docs/angles-study-note.html" target="_blank"><button id="notesBtn" type="button">Read Notes</button></a>
-        <p id="angleHelp">Use the slider or drag the orange handle on the circle. Arrow keys adjust the slider by 1°, Shift+arrow by 5°.</p>
+        <p id="angleHelp">Use the slider to adjust the angle, or drag the orange handle on the circle. Swipe left/right on mobile to adjust. Arrow keys adjust by 1°, Shift+arrow by 5°.</p>
+        
+        <div class="control-buttons">
+          <button id="randomBtn">Random angle</button>
+          <a href="docs/angles-study-note.html" target="_blank"><button id="notesBtn" type="button">Read Notes</button></a>
+        </div>
       </div>
     </section>
 
@@ -44,7 +50,7 @@
   </main>
 
   <footer>
-    <p>Made for classroom practice — simple, keyboard &amp; touch friendly.</p>
+    <p>Made for classroom practice — simple, keyboard &amp; touch friendly. Perfect for phones and tablets.</p>
   </footer>
 
   <script src="script.js"></script>
