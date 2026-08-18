@@ -67,7 +67,7 @@ canvas.addEventListener('pointerdown', e=>{
   const c = getCenter(); const dist = Math.hypot(x-c.x,y-c.y);
   if(Math.abs(dist - radius()) < 30){ dragging = true; setAngle(Math.round(canvasPosToAngle(x,y))); }
 });
-canvas.addEventListener('pointermove', e=>{ if(!dragging) return; const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; setAngle(Math.round(canvasPosToAngle(x,y))); });
+canvas.addEventListener('pointermove', e=>{ if(!dragging) return; const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; setAngle(Math.round((function(){const c=getCenter();const dx=x-c.x;const dy=y-c.y;const a=radToDeg(Math.atan2(-dy,dx));return((a%360)+360)%360})())); });
 canvas.addEventListener('pointerup', e=>{ dragging = false; try{canvas.releasePointerCapture(e.pointerId)}catch{} });
 canvas.addEventListener('pointercancel', ()=> dragging=false);
 
@@ -89,3 +89,114 @@ resizeCanvas(); setAngle(angle);
 // expose functions for quiz
 window.setAngle = setAngle;
 window.getCurrentAngle = ()=> angle;
+
+
+// Notes dialog + read-aloud support
+(function () {
+  const notesBtn = document.getElementById('notesBtn');
+  const notesDialog = document.getElementById('notesDialog');
+  const notesContent = document.getElementById('notesContent');
+  const closeNotes = document.getElementById('closeNotes');
+  const listenBtn = document.getElementById('listenBtn');
+
+  let utterance = null;
+  let isReading = false;
+
+  function openDialog() {
+    notesDialog.hidden = false;
+    notesDialog.classList.add('open');
+    notesDialog._previouslyFocused = document.activeElement;
+    notesContent.focus();
+    document.addEventListener('keydown', trapDialogKeydown);
+  }
+
+  function closeDialog() {
+    stopReading();
+    notesDialog.hidden = true;
+    notesDialog.classList.remove('open');
+    document.removeEventListener('keydown', trapDialogKeydown);
+    if (notesDialog._previouslyFocused) notesDialog._previouslyFocused.focus();
+  }
+
+  function trapDialogKeydown(e) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeDialog();
+    }
+    if (e.key === 'Tab') {
+      const focusable = notesDialog.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  async function loadNotes() {
+    try {
+      const res = await fetch('docs/angles-study-note.html');
+      if (!res.ok) throw new Error('Network response was not ok');
+      const text = await res.text();
+      // Insert the fetched HTML into the dialog content.
+      notesContent.innerHTML = text;
+    } catch (err) {
+      notesContent.innerHTML = '<p>Sorry — could not load the notes.</p>';
+      console.error('Error loading notes:', err);
+    }
+  }
+
+  function startReading() {
+    if (!window.speechSynthesis) {
+      alert('Read-aloud is not supported by your browser.');
+      return;
+    }
+    stopReading();
+    const plainText = notesContent.innerText || notesContent.textContent;
+    utterance = new SpeechSynthesisUtterance(plainText);
+    utterance.rate = 1;
+    speechSynthesis.speak(utterance);
+    isReading = true;
+    listenBtn.setAttribute('aria-pressed', 'true');
+    listenBtn.textContent = 'Stop';
+    utterance.onend = () => {
+      isReading = false;
+      listenBtn.setAttribute('aria-pressed', 'false');
+      listenBtn.textContent = 'Listen';
+    };
+  }
+
+  function stopReading() {
+    if (window.speechSynthesis && speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+    }
+    isReading = false;
+    listenBtn.setAttribute('aria-pressed', 'false');
+    listenBtn.textContent = 'Listen';
+    utterance = null;
+  }
+
+  notesBtn.addEventListener('click', async () => {
+    // Only load once (or reload if you prefer)
+    if (notesContent.innerHTML.trim() === '' || notesContent.innerText.includes('Loading')) {
+      await loadNotes();
+    }
+    openDialog();
+  });
+
+  closeNotes.addEventListener('click', () => closeDialog());
+
+  listenBtn.addEventListener('click', () => {
+    if (isReading) stopReading(); else startReading();
+  });
+
+  // close if user clicks outside dialog-inner
+  notesDialog.addEventListener('click', (e) => {
+    if (e.target === notesDialog) closeDialog();
+  });
+})();
